@@ -1,0 +1,14 @@
+[Unit]
+Description=Alumet Energy Measurement Agent
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/alumet-agent \
+  --plugins rapl,prometheus-exporter \
+  --config /etc/alumet/alumet-config.toml
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target
