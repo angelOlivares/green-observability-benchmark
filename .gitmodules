@@ -1,3 +1,12 @@
 [submodule "workload/otel-demo"]
 	path = workload/otel-demo
 	url = https://github.com/open-telemetry/opentelemetry-demo.git
+[submodule "backends/lgtm/opentelemetry-demo"]
+	path = backends/lgtm/opentelemetry-demo
+	url = https://github.com/grafana/opentelemetry-demo.git
+[submodule "backends/elastic/opentelemetry-demo"]
+	path = backends/elastic/opentelemetry-demo
+	url = https://github.com/elastic/opentelemetry-demo.git
+[submodule "backends/victoriametrics/opentelemetry-demo"]
+	path = backends/victoriametrics/opentelemetry-demo
+	url = https://github.com/VictoriaMetrics-Community/opentelemetry-demo.git
