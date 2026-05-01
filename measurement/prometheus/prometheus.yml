@@ -19,9 +19,8 @@ scrape_configs:
         labels:
           measurement_tool: alumet
 
-  # Kepler will be added here later
-  # - job_name: kepler
-  #   static_configs:
-  #     - targets: ["localhost:8085"]
-  #       labels:
-  #         measurement_tool: kepler
+  - job_name: kepler
+    static_configs:
+      - targets: ["localhost:8085"]
+        labels:
+          measurement_tool: kepler

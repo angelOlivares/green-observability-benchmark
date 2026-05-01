@@ -1,0 +1,13 @@
+[Unit]
+Description=Kepler Power Exporter
+After=network.target
+
+[Service]
+Type=simple
+# We point to the new paths in /usr/local/bin and /etc
+ExecStart=/usr/local/bin/kepler --config.file /etc/kepler/kepler.yaml --web.listen-address=":8085"
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
