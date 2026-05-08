@@ -3,7 +3,7 @@ Description=Scaphandre Energy Metrics Exporter
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/scaphandre prometheus --port 8083
+ExecStart=/usr/bin/scaphandre prometheus --port 8083 --containers
 Restart=always
 RestartSec=5
 User=root
