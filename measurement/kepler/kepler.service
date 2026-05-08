@@ -4,8 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-# We point to the new paths in /usr/local/bin and /etc
-ExecStart=/usr/local/bin/kepler --config.file /etc/kepler/kepler.yaml --web.listen-address=":8085"
+ExecStart=/usr/local/bin/kepler --config.file /etc/kepler/kepler.yaml
 Restart=always
 User=root
 

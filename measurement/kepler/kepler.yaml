@@ -4,7 +4,7 @@ log:
 
 monitor:
   interval: 5s
-  staleness: 1000ms
+  staleness: 500ms
   maxTerminated: 500
   minTerminatedEnergyThreshold: 10
 
@@ -21,9 +21,6 @@ exporter:
 
   prometheus: 
     enabled: true
-    debugCollectors:
-      - go
-      - process
     metricsLevel:
       - node
       - process
