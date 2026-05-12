@@ -1,0 +1,607 @@
+{
+  "uid": "green-otel-demo-scaphandre",
+  "title": "OTel Demo \u2014 Energy Consumption (Scaphandre)",
+  "description": "Per-service energy consumption of the OpenTelemetry Astronomy Shop baseline stack, measured by Scaphandre via RAPL/powercap. Part of green-observability-benchmark.",
+  "tags": [
+    "green",
+    "scaphandre",
+    "energy",
+    "otel-demo",
+    "benchmark"
+  ],
+  "timezone": "browser",
+  "refresh": "15s",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Total Stack Power",
+      "description": "Sum of power consumed by all OTel demo services at this moment (microwatts \u2192 watts)",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum(scaph_process_power_consumption_microwatts{container_label_com_docker_compose_project=\"otel-demo\"}) / 1e6",
+          "instant": true,
+          "legendFormat": "Total"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Services Monitored",
+      "description": "Number of OTel demo services with active power measurements",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "count(sum by (container_label_com_docker_compose_service) (scaph_process_power_consumption_microwatts{container_label_com_docker_compose_project=\"otel-demo\"}))",
+          "instant": true,
+          "legendFormat": "Services"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Top Consumer (now)",
+      "description": "Service consuming the most power at the current moment",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "topk(1, sum by (container_label_com_docker_compose_service) (scaph_process_power_consumption_microwatts{container_label_com_docker_compose_project=\"otel-demo\"}) / 1e6)",
+          "instant": true,
+          "legendFormat": "{{container_label_com_docker_compose_service}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Scaphandre Overhead",
+      "description": "Power consumed by Scaphandre itself \u2014 measurement tool overhead",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 3,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "purple"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_self_cpu_usage_percent / 100 * scaph_host_power_microwatts / 1e6",
+          "instant": true,
+          "legendFormat": "Overhead"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Power per Service Over Time",
+      "description": "Energy draw (watts) per OTel demo service. Each line is one service. Gaps indicate zero consumption.",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 3,
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": false,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum by (container_label_com_docker_compose_service) (\n  scaph_process_power_consumption_microwatts{\n    container_label_com_docker_compose_project=\"otel-demo\"\n  }\n) / 1e6",
+          "legendFormat": "{{container_label_com_docker_compose_service}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "bargauge",
+      "title": "Current Power Ranking",
+      "description": "Instantaneous power consumption ranked highest to lowest. Updated every scrape interval.",
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "valueMode": "color",
+        "showUnfilled": true,
+        "minVizWidth": 0,
+        "minVizHeight": 16,
+        "namePlacement": "auto",
+        "legendDisplayMode": "hidden"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 3,
+          "min": 0,
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sort_desc(sum by (container_label_com_docker_compose_service) (\n  scaph_process_power_consumption_microwatts{\n    container_label_com_docker_compose_project=\"otel-demo\"\n  }\n) / 1e6)",
+          "instant": true,
+          "legendFormat": "{{container_label_com_docker_compose_service}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Service Metrics Table",
+      "description": "Power, CPU, and memory per service at current moment",
+      "gridPos": {
+        "x": 12,
+        "y": 13,
+        "w": 12,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "sortBy": [
+          {
+            "displayName": "Power (W)",
+            "desc": true
+          }
+        ],
+        "footer": {
+          "show": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Power (W)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watt"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 1
+                    },
+                    {
+                      "color": "red",
+                      "value": 5
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "container_label_com_docker_compose_service": "Service",
+              "Value #A": "Power (W)",
+              "Value #B": "CPU %",
+              "Value #C": "Memory"
+            },
+            "indexByName": {
+              "Service": 0,
+              "Power (W)": 1,
+              "CPU %": 2,
+              "Memory": 3
+            }
+          }
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum by (container_label_com_docker_compose_service) (\n  scaph_process_power_consumption_microwatts{\n    container_label_com_docker_compose_project=\"otel-demo\"\n  }\n) / 1e6",
+          "instant": true,
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum by (container_label_com_docker_compose_service) (\n  scaph_process_cpu_usage_percentage{\n    container_label_com_docker_compose_project=\"otel-demo\"\n  }\n)",
+          "instant": true,
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum by (container_label_com_docker_compose_service) (\n  scaph_process_memory_bytes{\n    container_label_com_docker_compose_project=\"otel-demo\"\n  }\n)",
+          "instant": true,
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "CPU Usage per Service",
+      "description": "CPU consumption percentage per service \u2014 context for power attribution",
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum by (container_label_com_docker_compose_service) (\n  scaph_process_cpu_usage_percentage{\n    container_label_com_docker_compose_project=\"otel-demo\"\n  }\n)",
+          "legendFormat": "{{container_label_com_docker_compose_service}}"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Memory per Service",
+      "description": "Physical RAM usage per service \u2014 context for resource profiling",
+      "gridPos": {
+        "x": 12,
+        "y": 22,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum by (container_label_com_docker_compose_service) (\n  scaph_process_memory_bytes{\n    container_label_com_docker_compose_project=\"otel-demo\"\n  }\n)",
+          "legendFormat": "{{container_label_com_docker_compose_service}}"
+        }
+      ]
+    }
+  ]
+}

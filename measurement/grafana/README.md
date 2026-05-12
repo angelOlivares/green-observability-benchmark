@@ -25,4 +25,47 @@ sudo systemctl start grafana-server
 - **Prometheus-Measurement** — connects to host Prometheus on port 9099
 
 ## Dashboards
-- Energy measurement dashboard (TODO)
+
+| File | Description |
+|------|-------------|
+| `provisioning/dashboards/host-scaphandre.json` | Host power consumption and measurement tool overhead |
+| `provisioning/dashboards/otel-demo-scaphandre.json` | Per-service energy of the OTel demo stack |
+
+Both dashboards use `prometheus-measurement` datasource.
+
+### Installation
+
+Copy or symlink the provisioning files:
+
+```bash
+sudo ln -s $(pwd)/provisioning/dashboards/dashboard-provider.yaml \
+    /etc/grafana/provisioning/dashboards/dashboard-provider.yaml
+
+sudo ln -s $(pwd)/provisioning/dashboards/host-scaphandre.json \
+    /etc/grafana/provisioning/dashboards/host-scaphandre.json
+
+sudo ln -s $(pwd)/provisioning/dashboards/otel-demo-scaphandre.json \
+    /etc/grafana/provisioning/dashboards/otel-demo-scaphandre.json
+
+sudo systemctl restart grafana-server
+```
+
+### Dashboard notes
+
+See the dashboard JSON files for exact `exe` path filters used to distinguish
+host processes from Docker container processes of the same name.
+
+## Datasources
+
+| File | Description |
+|------|-------------|
+| `provisioning/datasources/prometheus.yaml` | Host Prometheus on port 9099 |
+
+Provisioned with uid `prometheus-measurement` — referenced by all dashboards.
+To apply:
+
+```bash
+sudo cp provisioning/datasources/prometheus.yaml \
+    /etc/grafana/provisioning/datasources/
+sudo systemctl restart grafana-server
+```

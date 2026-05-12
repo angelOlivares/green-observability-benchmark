@@ -1,0 +1,1085 @@
+{
+  "uid": "green-benchmark-host",
+  "title": "Host \u2014 Energy & Measurement Infrastructure",
+  "description": "Host power consumption and measurement tool overhead. Part of green-observability-benchmark.",
+  "tags": [
+    "green",
+    "scaphandre",
+    "host",
+    "benchmark"
+  ],
+  "timezone": "browser",
+  "refresh": "15s",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Host Power Overview",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Host Power (now)",
+      "description": "Total host power consumption reported by Scaphandre via RAPL",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 1,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_host_power_microwatts / 1e6",
+          "instant": true,
+          "legendFormat": "Host power"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Load Average (1m)",
+      "gridPos": {
+        "x": 4,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 2,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 8
+              },
+              {
+                "color": "red",
+                "value": 16
+              }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_host_load_avg_one",
+          "instant": true,
+          "legendFormat": "1m load"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Memory Available",
+      "gridPos": {
+        "x": 7,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 4000000000
+              },
+              {
+                "color": "green",
+                "value": 8000000000
+              }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_host_memory_available_bytes",
+          "instant": true,
+          "legendFormat": "Available"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Top Consumer (now)",
+      "gridPos": {
+        "x": 10,
+        "y": 1,
+        "w": 7,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "topk(1, sum by (exe) (scaph_process_power_consumption_microwatts) / 1e6)",
+          "instant": true,
+          "legendFormat": "{{exe}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Scaphandre Version",
+      "gridPos": {
+        "x": 17,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_self_version",
+          "instant": true,
+          "legendFormat": "v{{version}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Processes Tracked",
+      "gridPos": {
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "purple"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_self_topo_procs_nb",
+          "instant": true,
+          "legendFormat": "Processes"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Host Power Over Time",
+      "description": "Total host power consumption in watts. Baseline for all experiment conditions.",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 24,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "min": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_host_power_microwatts / 1e6",
+          "legendFormat": "Host power (W)"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "row",
+      "title": "Energy Consumption (cumulative Wh)",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 10,
+      "type": "barchart",
+      "title": "3h Energy (Wh)",
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 5,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "barWidth": 0.97,
+        "showValue": "auto",
+        "orientation": "auto",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watth",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 80
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Field"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "transpose",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum_over_time(avg_over_time(avg(scaph_host_power_microwatts)[1h:1h])[3h:1h]) / 1e6",
+          "legendFormat": "3h"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "barchart",
+      "title": "24h Energy (Wh)",
+      "gridPos": {
+        "x": 5,
+        "y": 14,
+        "w": 5,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "barWidth": 0.97,
+        "showValue": "auto",
+        "orientation": "auto",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watth",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 80
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Field"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "transpose",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum_over_time(avg_over_time(avg(scaph_host_power_microwatts)[1h:1h])[1d:1h]) / 1e6",
+          "legendFormat": "24h"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "barchart",
+      "title": "1w Energy (Wh)",
+      "gridPos": {
+        "x": 10,
+        "y": 14,
+        "w": 5,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "barWidth": 0.97,
+        "showValue": "auto",
+        "orientation": "auto",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watth",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 80
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Field"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "transpose",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum_over_time(avg_over_time(avg(scaph_host_power_microwatts)[1h:1h])[1w:1h]) / 1e6",
+          "legendFormat": "1w"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "barchart",
+      "title": "1 Month Energy (Wh)",
+      "gridPos": {
+        "x": 15,
+        "y": 14,
+        "w": 5,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "barWidth": 0.97,
+        "showValue": "auto",
+        "orientation": "auto",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watth",
+          "decimals": 2,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 80
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Field"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "transpose",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "sum_over_time(avg_over_time(avg(scaph_host_power_microwatts)[1h:1h])[4w:1h]) / 1e6",
+          "legendFormat": "1 month"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "barchart",
+      "title": "1 Year Energy est. (Wh)",
+      "gridPos": {
+        "x": 20,
+        "y": 14,
+        "w": 4,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "barWidth": 0.97,
+        "showValue": "auto",
+        "orientation": "auto",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watth",
+          "decimals": 0,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 80
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Field"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "transpose",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "(sum_over_time(avg_over_time(avg(scaph_host_power_microwatts)[1h:1h])[4w:1h]) / 1e6) * 12",
+          "legendFormat": "1 year est."
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "row",
+      "title": "RAPL Domains",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Power per RAPL Domain",
+      "description": "Power breakdown by RAPL domain \u2014 package (CPU), core, uncore, DRAM",
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 16,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "min": 0,
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_domain_power_microwatts / 1e6",
+          "legendFormat": "{{domain}} (socket {{socket}})"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Power per Socket",
+      "description": "Total power per CPU socket",
+      "gridPos": {
+        "x": 16,
+        "y": 22,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "min": 0,
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_socket_power_microwatts / 1e6",
+          "legendFormat": "Socket {{socket}}"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "row",
+      "title": "Measurement Tool Overhead",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 30,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Measurement Tools Power",
+      "description": "Power consumed by Scaphandre, Alumet and Kepler \u2014 the cost of measuring",
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 3,
+          "min": 0,
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_process_power_consumption_microwatts{exe=~\".*/scaphandre\"} / 1e6",
+          "legendFormat": "Scaphandre"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_process_power_consumption_microwatts{exe=~\".*/alumet.*\"} / 1e6",
+          "legendFormat": "Alumet"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_process_power_consumption_microwatts{exe=~\".*/kepler\"} / 1e6",
+          "legendFormat": "Kepler"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Monitoring Platform Power",
+      "description": "Power consumed by host Prometheus and Grafana",
+      "gridPos": {
+        "x": 12,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus-measurement"
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 3,
+          "min": 0,
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_process_power_consumption_microwatts{exe=~\".*prometheus.*\"} / 1e6",
+          "legendFormat": "Prometheus"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_process_power_consumption_microwatts{exe=~\".*grafana.*\"} / 1e6",
+          "legendFormat": "Grafana"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus-measurement"
+          },
+          "expr": "scaph_process_power_consumption_microwatts{cmdline=~\".*dockerd.*\"} / 1e6",
+          "legendFormat": "Docker daemon"
+        }
+      ]
+    }
+  ]
+}
