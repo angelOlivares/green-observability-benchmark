@@ -5,7 +5,44 @@ suffix = "_alumet"
 port = 9091
 add_attributes_to_labels = true
 
+[plugins.procfs.kernel]
+enabled = true
+poll_interval = "5s"
+
+[plugins.procfs.memory]
+enabled = true
+poll_interval = "5s"
+metrics = [
+    "MemTotal",
+    "MemFree",
+    "MemAvailable",
+    "Cached",
+    "SwapCached",
+    "Active",
+    "Inactive",
+    "Mapped",
+]
+
+[plugins.procfs.network]
+enabled = true
+poll_interval = "5s"
+
+[plugins.procfs.processes]
+enabled = true
+refresh_interval = "5s"
+strategy = "watcher"
+groups = []
+
+[plugins.procfs.processes.events]
+poll_interval = "5s"
+flush_interval = "5s"
+memory_mode = "quick"
+
+[plugins.cgroups]
+poll_interval = "5s"
+
 [plugins.rapl]
-poll_interval = "1s"
+poll_interval = "5s"
 flush_interval = "5s"
 no_perf_events = false
+
